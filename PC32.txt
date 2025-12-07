@@ -1,0 +1,58 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+// Provider class
+class CounterProvider with ChangeNotifier {
+  int counter = 0;
+
+  void increment() {
+    counter++;
+    notifyListeners(); // Notify listeners about the change
+  }
+}
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CounterProvider(),
+      child: MaterialApp(home: CounterApp()),
+    ),
+  );
+}
+
+class CounterApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Provider Counter Example")),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(child: CounterDisplay()), // Display counter value
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Provider.of<CounterProvider>(context, listen: false).increment();
+            },
+            child: Text("Increment Counter"),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Widget to display the counter value
+class CounterDisplay extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CounterProvider>(
+      builder: (context, counterProvider, child) {
+        return Text(
+          "Counter: ${counterProvider.counter}",
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+        );
+      },
+    );
+  }
+}
